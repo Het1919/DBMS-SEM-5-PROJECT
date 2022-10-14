@@ -1,0 +1,71 @@
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q1) List the Companies who are having job at 'Ahmedabad' with the req of 'Java'
+
+SELECT COMPANY_NAME FROM JOB 
+INNER JOIN COMPANY ON JOB.COMPANY_ID=COMPANY.COMPANY_ID
+INNER JOIN JOBLOCATION ON JOB.LOCATION_ID=JOBLOCATION.LOCATION_ID
+INNER JOIN JOBREQSKILL ON JOBREQSKILL.JOB_ID=JOB.JOB_ID
+INNER JOIN SKILLSET ON SKILLSET.SKILLSET_ID=JOBREQSKILL.SKILLSET_ID
+WHERE CITY='Ahmedabad' AND SKILL_NAME='Java';
+
+Q2) List the jobseeker with the experience of more then 1 years and searching for 'Software Developer' job
+
+SELECT FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM JOBSEEKER 
+INNER JOIN EXPERIENCE ON JOBSEEKER.JOBSEEKER_ID=EXPERIENCE.JOBSEEKER_ID
+INNER JOIN APPLY ON JOBSEEKER.JOBSEEKER_ID=APPLY.JOBSEEKER_ID
+INNER JOIN JOB ON APPLY.JOB_ID=JOB.JOB_ID
+INNER JOIN JOBTYPE ON JOBTYPE.TYPE_ID=JOB.TYPE_ID
+WHERE EXTRACT( YEAR FROM end_date) - EXTRACT( YEAR FROM start_date) >=1 AND JOB_TYPE='Software Developer';
+
+
+Q3) Give the count of recruiter company who posted job in 'May' Month
+
+SELECT COUNT(COMPANY_ID) FROM POST 
+INNER JOIN RECRUITER ON POST.RECRUITER_ID=RECRUITER.RECRUITER_ID
+WHERE EXTRACT( MONTH FROM post_date ) = 5; 
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q4) Display names of jobseeker who are selected for job posted by recruiter named 'RAJAN KIRTAN PATEL'
+
+SELECT FIRST_NAME , MIDDLE_NAME , LAST_NAME FROM JOBSEEKER WHERE JOBSEEKER_ID IN (
+SELECT JOBSEEKER_ID FROM RESPONSE WHERE RECRUITER_ID IN 
+( SELECT RECRUITER_ID FROM RECRUITER WHERE FIRST_NAME='RAJAN' AND Middle_name='KIRTAN' AND Last_name='PATEL' )
+AND is_Selected='true' ) ;
+
+
+Q5) Display contact details of Recruiter who posted job in 'Ahmedabad' After date '23-05-2020'
+
+SELECT FIRST_NAME,MIDDLE_NAME,LAST_NAME , CONTACT , ALTERNATE_CONTACT FROM RECRUITER
+INNER JOIN POST ON RECRUITER.RECRUITER_ID=POST.RECRUITER_ID
+WHERE POST_DATE > '05-23-2020' ;
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Q6) Count total jobs available in 'Ahmedabad' 
+
+SELECT COUNT(JOB_ID) FROM JOB INNER JOIN JOBLOCATION ON JOB.LOCATION_ID=JOBLOCATION.LOCATION_ID WHERE CITY='Ahmedabad';
+
+
+Q7) Display all details of jobseekers who have experience in 'Backend Management'
+
+SELECT * FROM EXPERIENCE WHERE JOB_TITLE='BACKEND MANAGEMENT';
+
+
+Q8) Count number of Recruiters who registered on portal after '12-07-2020'
+
+SELECT COUNT(RECRUITER_ID) FROM RECRUITER WHERE REG_DATE>'07-12-2020';
+
+
+Q9) Count number of jobseekers who completed their graduation from any 'IIT'
+
+SELECT COUNT(JOBSEEKER_ID) FROM EDUCATION WHERE UNIVERSITY_NAME LIKE 'IIT%';
+
+
+Q10) Count total number of jobs posted by each recruiter
+
+SELECT COUNT(JOB_ID) , RECRUITER_ID FROM POST GROUP BY RECRUITER_ID;
